@@ -1,5 +1,5 @@
 # Transferro
-A python application to transfer files between computer when they are on same local network
+A python script to transfer files between computer when they are on same local network
 
 # Usage
 Execute [transferro.py](transferro.py) in python3.5+</br>
