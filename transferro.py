@@ -1,6 +1,6 @@
 from time import sleep
 
-def main():
+def transferro():
     try:
         import server,client
     except:
@@ -14,6 +14,12 @@ def main():
         server.main()
     else:
         client.main()
+
+def main():
+    try:
+        transferro()
+    except KeyboardInterrupt:
+        print('Operation Aborted')
 
 if __name__ == '__main__':
     main()
