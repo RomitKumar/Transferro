@@ -2,6 +2,8 @@ import socket,subprocess
 from tkinter import Tk,filedialog
 from os.path import getsize
 
+temp_file,temp_socket = None,None
+
 def print_ip():
         try:
                 x=subprocess.getoutput('hostname -I').split()[0]
@@ -23,8 +25,8 @@ def print_ip():
         return False
 
 
-def main():
-        
+def sender():
+        global temp_file,temp_socket
         myclient = ''
         port = 54321
 
@@ -33,6 +35,7 @@ def main():
         
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        temp_socket = s
         s.bind((myclient,port))
         s.listen(1)
         print('Listening started')
@@ -42,11 +45,14 @@ def main():
         
         filepath = filedialog.askopenfilename(title='Choose file to send')
         filename = filepath.split('/')[-1]
+
+        f = open(filepath,'rb')
+        temp_file = f
+        
         filesize = getsize(filepath)
         filesizekb = filesize//1024
         print('File size: ',filesizekb,'KB')
-        f = open(filepath,'rb')
-
+        
         c,addr = s.accept()
         print('Connected to',addr)
         
@@ -72,6 +78,20 @@ def main():
         f.close()
         s.close()
         print('File sent successfully')
+
+def main():
+        try:
+                sender()
+        except KeyboardInterrupt:
+                print('\nUpload Interrupted')
+                temp_file.close()
+        except (ConnectionResetError, BrokenPipeError):
+                print('Upload Failed')git 
+                temp_file.close()
+        except AttributeError:
+                print('Upload Cancelled')
+        finally:
+                temp_socket.close()
 
 
 if __name__ == '__main__':

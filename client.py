@@ -1,10 +1,14 @@
 import socket
 from tkinter import Tk,filedialog
 
-def main():
+temp_file,temp_socket = None, None
+
+def receiver():
+        global temp_file,temp_socket
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        temp_socket = s
         port = 54321
-        host = input('Enter host IP: ')
+        host = input('Enter Sender IP: ')
 ##        CONNECTION
         while True:
                 try:
@@ -23,7 +27,6 @@ def main():
         
 ##        FILENAME
         filename = s.recv(8192).decode()
-        print('filename received')
         s.send('ok'.encode())
         
 ##        FILESIZE
@@ -33,7 +36,13 @@ def main():
         
 ##        LOCATION CHOOSER
         f = filedialog.asksaveasfile(initialfile = filename,title = 'Select location to save file',mode='wb')
+        try:
+                f.tell()
+        except AttributeError:
+                print('Download Cancelled')
+                return
         
+        temp_file = f
         progress = 0
         data = s.recv(8192)
         print('Receiving file..............') 
@@ -46,11 +55,24 @@ def main():
                         print(str(progress),'% Downloaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep='',end='\r')
 
         print(str(progress),'% Downloaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep = '')
-        print('file received successfully')
+        if f.tell()!=filesize:
+                print('Download failed')
+        else:
+                print('file received successfully')
         f.close()
         s.close()
 
+def main():
+        try:
+                receiver()
+        except KeyboardInterrupt:
+                print('\nDownload Interrupted')
+                temp_socket.close()
+                try:
+                        temp_file.close()
+                except:
+                        pass
+
 
 if __name__ == '__main__':
-
         main()
