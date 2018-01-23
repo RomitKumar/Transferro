@@ -43,16 +43,13 @@ def receiver():
                 return
         
         temp_file = f
-        progress = 0
         data = s.recv(8192)
         print('Receiving file..............') 
         while data:
                 f.write(data)
                 data = s.recv(8192)
-                temp = f.tell()*100//filesize
-                if temp != progress:
-                        progress = temp
-                        print(str(progress),'% Downloaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep='',end='\r')
+                progress = f.tell()*100//filesize
+                print(str(progress),'% Downloaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep='',end='\r')
 
         print(str(progress),'% Downloaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep = '')
         if f.tell()!=filesize:

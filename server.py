@@ -65,14 +65,11 @@ def sender():
         print('Sending file..............')
         f.seek(0)
         data = f.read(8192)
-        progress = 0
         while data:
                 c.send(data)
                 data = f.read(8192)
-                temp=f.tell()*100//filesize
-                if temp!=progress:
-                        progress = temp
-                        print(str(progress),'% Uploaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep='',end='\r')
+                progress = f.tell()*100//filesize
+                print(str(progress),'% Uploaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep='',end='\r')
         
         print(str(progress),'% Uploaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep='')        
         f.close()
@@ -86,7 +83,7 @@ def main():
                 print('\nUpload Interrupted')
                 temp_file.close()
         except (ConnectionResetError, BrokenPipeError):
-                print('Upload Failed')git 
+                print('Upload Failed') 
                 temp_file.close()
         except AttributeError:
                 print('Upload Cancelled')
