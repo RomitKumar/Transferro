@@ -23,6 +23,11 @@ def print_ip():
                 x=subprocess.getoutput('ipconfig | findstr /C:"IPv4 Address"').split(': ')[-1]
                 if(x==''):
                         print("No network detected")
+                        choice = input('Do you want to run it on localhost[y/n]: ')
+                        if choice in ['y','Y']:
+                                print('Your IP is -- localhost')
+                        else:
+                                return True
                 else:
                         print('Your IP is',x)
         return False
