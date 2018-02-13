@@ -21,7 +21,15 @@ def print_ip():
                 print('your IP is -- ',x)
         else:
                 x=subprocess.getoutput('ipconfig | findstr /C:"IPv4 Address"').split(': ')[-1]
-                print('Your IP is',x)
+                if(x==''):
+                        print("No network detected")
+                        choice = input('Do you want to run it on localhost[y/n]: ')
+                        if choice in ['y','Y']:
+                                print('Your IP is -- localhost')
+                        else:
+                                return True
+                else:
+                        print('Your IP is',x)
         return False
 
 
@@ -32,7 +40,7 @@ def sender():
 
         if print_ip():
                 return
-        
+
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         temp_socket = s
@@ -42,26 +50,26 @@ def sender():
 
         tmp=Tk()
         tmp.withdraw()
-        
+
         filepath = filedialog.askopenfilename(title='Choose file to send')
         filename = filepath.split('/')[-1]
 
         f = open(filepath,'rb')
         temp_file = f
-        
+
         filesize = getsize(filepath)
         filesizekb = filesize//1024
         print('File size: ',filesizekb,'KB')
-        
+
         c,addr = s.accept()
         print('Connected to',addr)
-        
+
         c.send(filename.encode())
         c.recv(2)
-        
+
         c.send(str(filesize).encode())
         c.recv(2)
-        
+
         print('Sending file..............')
         f.seek(0)
         data = f.read(8192)
@@ -70,8 +78,8 @@ def sender():
                 data = f.read(8192)
                 progress = f.tell()*100//filesize
                 print(str(progress),'% Uploaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep='',end='\r')
-        
-        print(str(progress),'% Uploaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep='')        
+
+        print(str(progress),'% Uploaded',' {} KB/{} KB'.format(f.tell()//1024,filesizekb),sep='')
         f.close()
         s.close()
         print('File sent successfully')
@@ -83,7 +91,7 @@ def main():
                 print('\nUpload Interrupted')
                 temp_file.close()
         except (ConnectionResetError, BrokenPipeError):
-                print('Upload Failed') 
+                print('Upload Failed')
                 temp_file.close()
         except AttributeError:
                 print('Upload Cancelled')
