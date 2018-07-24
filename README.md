@@ -7,8 +7,12 @@ A python script to transfer files between computer when they are on same local n
 
 
 # Requirements
-Python (3.5+)
-
+1. Python (3.5+)</br>
+2. Tkinter for python</br>
+To install Tkinter in debian system, run the following command:</br>
+``` 
+sudo apt-get install python3-tk
+```
 
 
 # Usage
