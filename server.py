@@ -1,3 +1,8 @@
+#windows_support
+#transferro
+#best_software_in_the_world
+
+
 import socket,subprocess
 from tkinter import Tk,filedialog
 from os.path import getsize
